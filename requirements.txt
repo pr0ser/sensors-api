@@ -1,0 +1,4 @@
+fastapi
+aioinflux
+uvicorn
+python-decouple
