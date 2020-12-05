@@ -1,4 +1,5 @@
-fastapi
 aioinflux
-uvicorn
+fastapi
 python-decouple
+schemathesis
+uvicorn
