@@ -3,3 +3,5 @@
 *.log
 .env
 venv
+.pytest_cache
+.hypothesis
