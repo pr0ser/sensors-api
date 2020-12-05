@@ -1,8 +1,9 @@
-from typing import List
-from decouple import config, Csv
+from typing import List, Union
 
 from aioinflux import InfluxDBClient
-from fastapi import FastAPI, HTTPException
+from decouple import config, Csv
+from fastapi import FastAPI
+from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 
 app = FastAPI(title='Sensors API', description='Query Ruuvitag sensor measurements.')
@@ -24,6 +25,10 @@ class Measurements(BaseModel):
 class Sensor(BaseModel):
     name: str
     measurements: Measurements
+
+
+class Message(BaseModel):
+    message: str
 
 
 async def get_measurements(sensor: str) -> Measurements:
@@ -57,10 +62,13 @@ async def get_sensors() -> List[Sensor]:
     return sensor_list
 
 
-@app.get('/sensors/{sensor_name}', response_model=Sensor)
-async def get_sensor(sensor_name: str) -> Sensor:
+@app.get('/sensors/{sensor_name}', response_model=Sensor, responses={404: {"model": Message}})
+async def get_sensor(sensor_name: str) -> Union[Sensor, JSONResponse]:
     if sensor_name not in sensors:
-        raise HTTPException(status_code=422, detail=f'Sensor with name {sensor_name} not found')
+        return JSONResponse(
+            status_code=404,
+            content={'message': f'Sensor with name {sensor_name} not found'}
+        )
     measurements = await get_measurements(sensor_name)
     sensor = Sensor(name=sensor_name, measurements=measurements)
     return sensor
