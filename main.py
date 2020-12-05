@@ -1,5 +1,5 @@
 from typing import List
-from decouple import config
+from decouple import config, Csv
 
 from aioinflux import InfluxDBClient
 from fastapi import FastAPI, HTTPException
@@ -11,7 +11,7 @@ influx = InfluxDBClient(
     port=config('INFLUXDB_PORT'),
     database=config('INFLUXDB_DB')
 )
-sensors = ['olohuone', 'makuuhuone', 'piha', 'jääkaappi']
+sensors = config('SENSORS', cast=Csv(str))
 
 
 class Measurements(BaseModel):

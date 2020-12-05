@@ -12,6 +12,7 @@ Variable name | Comments
 INFLUXDB_HOST | Address of the InfluxDB server
 INFLUXDB_PORT | InfluxDB server port
 INFLUXDB_DB | InfluxDB Database containing measurements
+SENSORS | Ruuvitag sensor names separated with comma
 ## Launch development server
 `uvicorn main:app --reload`
 
