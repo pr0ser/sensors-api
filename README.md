@@ -1,11 +1,11 @@
 # Sensors API
 Query Ruuvitag sensor measurements from InfluxDB.
 
-## Setup environment variables
-Create ".env" file to project root.
-
 ## Install Python requirements
 `pip install requirements.txt`
+
+## Setup environment variables
+Create ".env" file to project root with following variables.
 
 Variable name | Comments
 --- | --- |
