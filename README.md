@@ -19,3 +19,10 @@ SENSORS | Ruuvitag sensor names separated with comma
 ## Documentation location
 http://127.0.0.1:8000/redoc  
 http://127.0.0.1:8000/docs
+
+## Run tests
+`schemathesis run --stateful=links --checks all http://127.0.0.1:8000/openapi.json`
+
+or
+
+`pytest tests.py`
