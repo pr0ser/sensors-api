@@ -18,6 +18,7 @@ class Measurements(BaseModel):
     temperature: float
     humidity: float
     air_pressure: float
+    battery_voltage: float
 
 
 class Sensor(BaseModel):
@@ -30,7 +31,8 @@ async def get_measurements(sensor: str) -> Measurements:
         f"""
         select last(temperature) as temperature,
         last(humidity) as humidity,
-        last(pressure) as air_pressure
+        last(pressure) as air_pressure,
+        last(batteryVoltage) as battery_voltage
         from ruuvitag
         where location = '{sensor}'
         """
@@ -39,7 +41,8 @@ async def get_measurements(sensor: str) -> Measurements:
     measurements = Measurements(
         temperature=float(values[1]),
         humidity=float(values[2]),
-        air_pressure=float(values[3])
+        air_pressure=float(values[3]),
+        battery_voltage=float(values[4])
     )
     return measurements
 
