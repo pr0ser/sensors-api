@@ -1,3 +1,4 @@
+from asyncio import gather
 from typing import List, Union
 
 from aioinflux import InfluxDBClient
@@ -31,7 +32,7 @@ class Message(BaseModel):
     message: str
 
 
-async def get_measurements(sensor: str) -> Measurements:
+async def get_sensor_measurements(sensor: str) -> Sensor:
     resp = await influx.query(
         f"""
         select last(temperature) as temperature,
@@ -49,16 +50,16 @@ async def get_measurements(sensor: str) -> Measurements:
         air_pressure=float(values[3]),
         battery_voltage=float(values[4])
     )
-    return measurements
+    sensor = Sensor(name=sensor, measurements=measurements)
+    return sensor
 
 
 @app.get('/sensors', response_model=List[Sensor])
 async def get_sensors() -> List[Sensor]:
     sensor_list = []
-    for item in sensors:
-        measurements = await get_measurements(item)
-        sensor = Sensor(name=item, measurements=measurements)
-        sensor_list.append(sensor)
+    results = await gather(*map(get_sensor_measurements, sensors))
+    for result in results:
+        sensor_list.append(result)
     return sensor_list
 
 
@@ -69,6 +70,5 @@ async def get_sensor(sensor_name: str) -> Union[Sensor, JSONResponse]:
             status_code=404,
             content={'message': f'Sensor with name {sensor_name} not found'}
         )
-    measurements = await get_measurements(sensor_name)
-    sensor = Sensor(name=sensor_name, measurements=measurements)
+    sensor = await get_sensor_measurements(sensor_name)
     return sensor
