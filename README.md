@@ -2,7 +2,7 @@
 Query Ruuvitag sensor measurements from InfluxDB.
 
 ## Install Python requirements
-`pip install requirements.txt`
+`pip install -r requirements.txt`
 
 ## Setup environment variables
 Create ".env" file to project root with following variables.
